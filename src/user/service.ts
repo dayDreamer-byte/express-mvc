@@ -1,3 +1,4 @@
+import { Jwt } from "../jwt";
 import { PrismaDB } from "../db";
 import { UserDto } from "./user.dto";
 import { validate } from "class-validator";
@@ -12,10 +13,39 @@ import { plainToClass } from "class-transformer";
 @injectable()
 export class UserService {
 	// 注入PrismaDB依赖
-	constructor(@inject(PrismaDB) private readonly PrismaDB: PrismaDB) {}
+	constructor(@inject(PrismaDB) private readonly PrismaDB: PrismaDB, @inject(Jwt) private readonly jwt: Jwt) {}
 	// 这里会有异步传染性
 	async getUser() {
 		return await this.PrismaDB.prisma.user.findMany();
+	}
+
+	async login(user: UserDto) {
+		const userDto = plainToClass(UserDto, user);
+		const errors = await validate(userDto);
+		if (errors.length > 0) {
+			return errors;
+		} else {
+			const result = await this.PrismaDB.prisma.user.findMany({
+				where: {
+					name: user.name,
+					email: user.email,
+				},
+			});
+			if (result.length === 0) {
+				return {
+					code: 400,
+					data: "用户名或邮箱错误",
+				};
+			} else {
+				return {
+					code: 200,
+					data: {
+						result: result,
+						token: this.jwt.createToken(result[0]),
+					},
+				};
+			}
+		}
 	}
 
 	async createUser(user: UserDto) {

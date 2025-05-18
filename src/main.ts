@@ -1,3 +1,4 @@
+import { Jwt } from "./jwt";
 import express from "express";
 import { PrismaDB } from "./db/index";
 import { User } from "./user/controller";
@@ -5,6 +6,7 @@ import { UserService } from "./user/service";
 import { Container, interfaces } from "inversify";
 import { PrismaClient } from "../generated/prisma-client-js";
 import { InversifyExpressServer } from "inversify-express-utils";
+import passport from "passport";
 
 const container = new Container();
 /**
@@ -21,6 +23,8 @@ container.bind<PrismaClient>("PrismaClient").toFactory((ctx: interfaces.Context)
 });
 // 向容器中注入db依赖
 container.bind<PrismaDB>(PrismaDB).toSelf();
+// 向容器中注入jwt依赖
+container.bind<Jwt>(Jwt).toSelf();
 
 /**
  * 创建server 并配置中间件
@@ -29,6 +33,8 @@ const server = new InversifyExpressServer(container);
 server.setConfig((app) => {
 	// 配置中间件 支持post请求
 	app.use(express.json());
+	// 配置jwt中间件，用passport的initialize方法初始化
+	app.use(passport.initialize());
 });
 const app = server.build();
 app.listen(3000, () => {

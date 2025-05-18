@@ -14,6 +14,7 @@
 2. 支持 inversify 作为依赖注入容器
 3. 支持 typescript
 4. 支持 class-validator、class-transformer 作为参数校验工具
+5. 支持 jwt token 校验
 
 ---
 
