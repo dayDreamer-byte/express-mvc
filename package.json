@@ -1,0 +1,31 @@
+{
+	"name": "express-mvc",
+	"version": "1.0.0",
+	"description": "基于express实现的mvc架构后端服务框架",
+	"scripts": {
+		"start": "nodemon ./src/main.ts",
+		"init:prisma": "prisma init --db --output ../generated/prisma",
+		"generator": "prisma migrate dev --name init",
+		"prisma:update": "prisma migrate dev",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@prisma/client": "6.7.0",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.14.2",
+		"express": "^4.21.2",
+		"inversify": "^6.2.2",
+		"inversify-express-utils": "^6.5.0",
+		"nodemon": "^3.1.10",
+		"prisma": "^6.7.0",
+		"reflect-metadata": "^0.2.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.8.3"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.1"
+	}
+}
